@@ -8,7 +8,7 @@ pipeline {
     }
     stage('Docker Build') {
       steps {
-        sh 'docker build -t turkuazsengul/ms-api-product:latest .'
+        sh 'docker build -f Dockerfile -t turkuazsengul/ms-api-product:latest .'
       }
     }
     stage('Docker Push') {
