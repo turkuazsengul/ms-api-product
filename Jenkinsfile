@@ -1,20 +1,40 @@
 pipeline {
+  environment {
+    imagename = "turkuazsengul/ms-api-product:latest"
+    registryCredential = 'dockerhub'
+    dockerImage = ''
+    maven = tool 'maven'
+  }
+
   agent any
+
   stages {
-    stage('Maven Install') {
+    stage('Cloning Git') {
       steps {
-        sh 'mvn clean install'
+        git([url: 'https://github.com/turkuazsengul/ms-api-product.git', branch: 'master', credentialsId: 'github-password'])
       }
     }
+    stage('Create Jar') {
+        steps{
+            bat 'mvn -Dmaven.test.skip install'
+        }
+    }
     stage('Docker Build') {
-      steps {
-        sh 'docker build -f Dockerfile -t turkuazsengul/ms-api-product:latest .'
+      steps{
+        script {
+          dockerImage = docker.build imagename
+        }
       }
     }
     stage('Docker Push') {
-      steps {
-        sh 'docker push turkuazsengul/ms-api-user:latest'
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push("$BUILD_NUMBER")
+            dockerImage.push('latest')
+          }
+        }
       }
-     }
+    }
   }
 }
