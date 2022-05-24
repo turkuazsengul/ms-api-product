@@ -7,8 +7,7 @@ spring:
   application:
     name: product
   config:
-#    import: configserver:http://configuration:8888
-    import: configserver:http://localhost:8888
+    import: configserver:http://configuration:8888
 #app:
 #  domain: d1
 #  subdomain: sb1
